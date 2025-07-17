@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>Fetching your location...</p>
+    <script>
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        const mapLink = `https://maps.google.com/?q=${lat},${lon}`;
+        const waLink = `https://wa.me/919144663135?text=Here%20is%20my%20location:%20${encodeURIComponent(mapLink)}`;
+        window.location.href = waLink;
+      }, function(error) {
+        alert('Location access denied.');
+      });
+    </script>
+  </body>
+</html>
