@@ -1,17 +1,132 @@
 <!DOCTYPE html>
-<html>
-  <body>
-    <p>Fetching your location...</p>
-    <script>
-      navigator.geolocation.getCurrentPosition(function(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        const mapLink = `https://maps.google.com/?q=${lat},${lon}`;
-        const waLink = `https://wa.me/919144663135?text=Here%20is%20my%20location:%20${encodeURIComponent(mapLink)}`;
-        window.location.href = waLink;
-      }, function(error) {
-        alert('Location access denied.');
-      });
-    </script>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Location on WhatsApp</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f8f8f8;
+    }
+    img {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #ff3399;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #e02e85;
+    }
+    input {
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://www.meesho.com/assets/svgicons/meeshoLogo.svg" alt="Meesho Logo">
+  <h2>Share Your Location on WhatsApp</h2>
+
+  <p>You can either allow location access or customize your location manually:</p>
+
+  <button onclick="getLocation()">Share Current Location</button>
+
+  <p>OR</p>
+
+  <div id="map" style="height: 300px; width: 100%; max-width: 500px; margin: auto;"></div>
+<br>
+<button onclick="sendMapLocation()">Send Selected Location</button>
+
+
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const mapLink = `https://maps.google.com/?q=${lat},${lon}`;
+          const waLink = `https://wa.me/9144663135?text=My%20location:%20${encodeURIComponent(mapLink)}`;
+          window.location.href = waLink;
+        }, function(error) {
+          alert('Location access denied or not available.');
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+
+    // function sendCustomLocation() {
+    //   const customLoc = document.getElementById("customLocation").value;
+    //   if (!customLoc) {
+    //     alert("Please enter a custom location or map link.");
+    //     return;
+    //   }
+    //   const waLink = `https://wa.me/919876543210?text=My%20location:%20${encodeURIComponent(customLoc)}`;
+    //   window.location.href = waLink;
+    // }
+  </script>
+  <script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLOns0CJAfocEbsW6Hv_eWEvUbHODGV8M&callback=initMap"
+  async
+  defer
+></script>
+
+<script>
+  let map, marker, selectedLatLng;
+
+  function initMap() {
+    const initialPosition = { lat: 22.5726, lng: 88.3639 }; // Example: Kolkata
+
+    map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 13,
+      center: initialPosition,
+    });
+
+    marker = new google.maps.Marker({
+      position: initialPosition,
+      map,
+      draggable: true,
+    });
+
+    selectedLatLng = initialPosition;
+
+    map.addListener("click", (e) => {
+      selectedLatLng = e.latLng;
+      marker.setPosition(selectedLatLng);
+    });
+
+    marker.addListener("dragend", (e) => {
+      selectedLatLng = e.latLng;
+    });
+  }
+
+  function sendMapLocation() {
+    if (!selectedLatLng) {
+      alert("Please select a location on the map.");
+      return;
+    }
+    const mapLink = `https://maps.google.com/?q=${selectedLatLng.lat()},${selectedLatLng.lng()}`;
+    const waLink = `https://wa.me/919876543210?text=My%20location:%20${encodeURIComponent(mapLink)}`;
+    window.location.href = waLink;
+  }
+</script>
+
+  
+</body>
 </html>
